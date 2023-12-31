@@ -1,0 +1,13 @@
+FRONTEND:
+(1) On terminal write command "vite@latest"
+    - Give project name ..here : Ecommerce-frontend 
+    - Select React
+    - Select Typescript + SWC
+(2) On terminal "cd ./Ecommerce-frontend"
+    - write command "npm i" (to install all dependicies)
+
+(3) On terminal, write command to install all packages
+    - npm i react-hot-toast react-icons sass firebase react-router-dom react-table
+
+(4) In package.json under dev dependency, react table is missing, so to add dependency write beow command.
+    - npm i --save-dev @types/react-table
