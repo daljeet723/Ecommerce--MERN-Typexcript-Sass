@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { VscError } from "react-icons/vsc"
 import CartItem from "../components/cart-item";
+import { Link } from "react-router-dom";
 
 const cartItems = [
   {
-    productId:"dbhend",
-    photo:"https://m.media-amazon.com/images/I/71vFKBpKakL._SX569_.jpg",
-    name:"MacBook",
-    price:84000,
+    productId: "dbhend",
+    photo: "https://m.media-amazon.com/images/I/71vFKBpKakL._SX569_.jpg",
+    name: "MacBook",
+    price: 84000,
     quantity: 2,
-    stock:10
+    stock: 10
   }
 ];
 const subtotal = 2000;
@@ -27,38 +28,52 @@ const Cart = () => {
 
   //when coupon changes then call useEffect
   //when user type something show invalid upto time user stops typing
-  useEffect(()=>{
+  useEffect(() => {
 
-    const timeOutId = setTimeout(()=>{
+    const timeOutId = setTimeout(() => {
       //50% chances of correct code 0.5 means 50%
       //after every 1 sec
-      if(Math.random()> 0.5) setIsValidCouponCode(true);
+      if (Math.random() > 0.5) setIsValidCouponCode(true);
       else setIsValidCouponCode(false);
-    },1000);
+    }, 1000);
 
-    return ()=>{
+    return () => {
       clearTimeout(timeOutId);
       setIsValidCouponCode(false);
     };
-  },[couponCode]);
+  }, [couponCode]);
 
   return (
     <div className="cart">
 
       {/* Product details on left side */}
       <main>
-        {cartItems.map((i,idx)=>(
-          <CartItem key={idx} cartItem={i} />
-        ))}
+        {cartItems.length > 0 ?
+          (cartItems.map((i, idx) => (
+            <CartItem key={idx} cartItem={i} />
+          ))) :
+          (<h1>No Items Added</h1>)
+        }
+
       </main>
 
       {/* Right side checkout details */}
       <aside>
-        <p>Subtotal: ₹{subtotal}</p>
-        <p>Shipping Charges: ₹{shippingCharges}</p>
-        <p>Tax: ₹{tax}</p>
-        <p>Discount: <em> -  ₹{discount}</em></p>
-        <p><b>Total: ₹{total}</b></p>
+        <p>Subtotal:
+          <span className="priceDetail">₹{subtotal}</span>
+        </p>
+        <p>Shipping Charges:
+          <span className="priceDetail">₹{shippingCharges}</span>
+        </p>
+        <p>Tax:
+          <span className="priceDetail">₹{tax}</span>
+        </p>
+        <p>Discount:
+          <span className="priceDetail"><em> -  ₹{discount}</em></span>
+        </p>
+        <p><b>Total: </b>
+          <span className="priceDetail"> <b>₹{total}</b></span>
+        </p>
         <input type="text"
           placeholder="Coupon Code"
           value={couponCode}
@@ -74,7 +89,11 @@ const Cart = () => {
             (<span className="red">
               Invalid Coupon <VscError />
             </span>)
-        )}
+        )};
+
+        {/* Navigate to shipping page if items exists in cart */}
+
+        {cartItems.length > 0 && <Link to="/shipping">Checkout</Link>}
       </aside>
     </div>
   )

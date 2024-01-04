@@ -8,6 +8,7 @@ import Header from "./components/header";
 const Home = lazy(() => import("./pages/home"));
 const Search = lazy(() => import("./pages/search"));
 const Cart = lazy(() => import("./pages/cart"));
+const Shipping = lazy(() => import("./pages/shipping"));
 
 //ADMIN 
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
@@ -32,7 +33,7 @@ const App = () => {
   return (
     <Router>
       {/* HEADER */}
-      <Header/>
+      <Header />
       {/* fallback used to display other value when page/data is loading */}
       <Suspense fallback={<Loader />}>
         <Routes>
@@ -40,6 +41,10 @@ const App = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/cart" element={<Cart />} />
 
+          {/* Logged in user routes */}
+          <Route>
+            <Route path="/shipping" element={<Shipping />} />
+          </Route>
 
 
           {/* ADMIN ROUTES */}
