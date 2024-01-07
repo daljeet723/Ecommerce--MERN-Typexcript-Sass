@@ -11,3 +11,58 @@ FRONTEND:
 
 (4) In package.json under dev dependency, react table is missing, so to add dependency write beow command.
     - npm i --save-dev @types/react-table
+
+
+BACKEND
+    write below commands on terminal:
+        (a) cd ./Ecommerce-backend/
+        (b) npm init
+
+        (c) To add typescript globally in system:
+            "npm i -g typescript"
+    
+        (d) "tsc --init"
+
+    In tsconfig.json file, make below changes:
+        change target: "es2016" to -- line 14
+            "target": "ES2020", 
+        uncomment outdir and add dist value to it -- line 58
+            "outDir": "dist",  
+        uncomment rootDir and add src value to it -- line 29
+            "rootDir": "src", 
+        Change module value to below -- line 28
+             "module": "NodeNext",   
+         Uncomment moduleResolution and change value -- line 30
+            "moduleResolution": "NodeNext", 
+
+    Add below line in package.json file
+         "type":"module" (under line "main": "index.js",)
+         this allow us to use import statement in ES6
+
+    Install below packages from terminal:
+        "npm i express dotenv mongoose"
+    
+    Write below command in terminal to add typescript dependency in package.json
+        "npm i --save-dev @types/express @types/node typescript"
+        "npm i --save-dev nodemon"
+
+    Create first file app.ts under src folder.
+
+    To run backend for first time type below in terminal
+        "tsc"
+        It will create new foler with name dist and app.js file inside it
+
+    Write below in termial to run file
+        "node .\dist\app.js"
+
+    *** whenevr you are making changes in app.ts file write "tsc" in termial,
+    so that all new changes also occur in app.js file.
+    
+    To avoid writing  "node .\dist\app.js", make changes in package.json file
+        "start": "node dist/app.js",
+        "build": "tsc",
+        "watch":"tsc -w",
+        "dev":"nodemon dist/app.js"
+
+    Now to run backend file write
+        "npm run dev"
