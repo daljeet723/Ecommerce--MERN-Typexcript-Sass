@@ -5,10 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node dist/app.js",
-    "build": "tsc",
-    "watch": "tsc -w",
-    "dev": "nodemon dist/app.js"
+    "start": "nodemon dist/app.js",
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json -w",
+    "dev": "npm run watch | nodemon dist/app.js"
   },
   "author": "",
   "license": "ISC",
