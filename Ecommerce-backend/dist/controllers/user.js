@@ -36,40 +36,43 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import { User } from "../models/user.js";
 export var addUser = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, name_1, email, photo, gender, role, dob, _id, user, userExists, error_1;
+    var _a, name_1, email, photo, gender, dob, _id, user, error_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _b.trys.push([0, 3, , 4]);
-                _a = req.body, name_1 = _a.name, email = _a.email, photo = _a.photo, gender = _a.gender, role = _a.role, dob = _a.dob, _id = _a._id;
+                _b.trys.push([0, 2, , 3]);
+                _a = req.body, name_1 = _a.name, email = _a.email, photo = _a.photo, gender = _a.gender, dob = _a.dob, _id = _a._id;
                 return [4 /*yield*/, User.create({
                         name: name_1,
                         email: email,
                         photo: photo,
                         gender: gender,
-                        role: role,
                         dob: dob,
                         _id: _id
                     })];
             case 1:
                 user = _b.sent();
-                return [4 /*yield*/, User.findOne({ email: req.body.email })];
-            case 2:
-                userExists = _b.sent();
-                if (userExists) {
-                    return [2 /*return*/, res.status(400).json({
-                            success: false,
-                            message: "User already exists"
-                        })];
-                }
+                // const userExists = await User.findOne({ email: req.body.email });
+                // if (userExists) {
+                //     return res.status(400).json({
+                //         success: false,
+                //         message: "User already exists"
+                //     });
+                // }
                 return [2 /*return*/, res.status(200).json({
                         success: true,
                         message: "Welcome ".concat(user.name)
                     })];
-            case 3:
+            case 2:
                 error_1 = _b.sent();
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                if (error_1 instanceof Error) {
+                    return [2 /*return*/, res.status(400).json({
+                            success: false,
+                            message: error_1.message
+                        })];
+                }
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
