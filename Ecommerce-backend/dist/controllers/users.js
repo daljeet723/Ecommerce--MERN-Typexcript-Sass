@@ -3,9 +3,9 @@ import { User } from "../models/user.js";
 import { newUserRequestBody } from "../types/user.js";
 
 export const addUser = async (
-    req: Request<{}, {}, newUserRequestBody>,
-    res: Response,
-    next: NextFunction
+    req,
+    res,
+    next
 ) => {
     try {
         return next(new Error());
@@ -30,15 +30,12 @@ export const addUser = async (
             message: `Welcome ${user.name}`
         });
 
-    } catch (error: unknown) {
-        console.error(error);
-        if (error instanceof Error) {
+    } catch (error) {
+        
             return res.status(400).json({
                 success: false,
                 message: error.message
             });
-        } else {
-            return next(error); // Pass non-Error types to the error-handling middleware
-        }
+        
     }
 }

@@ -41,35 +41,24 @@ export var addUser = function (req, res, next) { return __awaiter(void 0, void 0
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 2, , 3]);
-                _a = req.body, name_1 = _a.name, email = _a.email, photo = _a.photo, gender = _a.gender, dob = _a.dob, _id = _a._id;
-                return [4 /*yield*/, User.create({
-                        name: name_1,
-                        email: email,
-                        photo: photo,
-                        gender: gender,
-                        dob: dob,
-                        _id: _id
-                    })];
+                return [2 /*return*/, next(new Error())];
             case 1:
                 user = _b.sent();
-                // const userExists = await User.findOne({ email: req.body.email });
-                // if (userExists) {
-                //     return res.status(400).json({
-                //         success: false,
-                //         message: "User already exists"
-                //     });
-                // }
                 return [2 /*return*/, res.status(200).json({
                         success: true,
                         message: "Welcome ".concat(user.name)
                     })];
             case 2:
                 error_1 = _b.sent();
+                console.error(error_1);
                 if (error_1 instanceof Error) {
                     return [2 /*return*/, res.status(400).json({
                             success: false,
                             message: error_1.message
                         })];
+                }
+                else {
+                    return [2 /*return*/, next(error_1)]; // Pass non-Error types to the error-handling middleware
                 }
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
