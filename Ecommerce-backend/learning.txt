@@ -1,0 +1,19 @@
+(1) HOW TRY-CATCH WORKS (Error handler function in middleware/error.ts)
+
+    export const TryCatch = (func: controllerType) =>
+        (req: Request, res: Response, next: NextFunction) =>
+            Promise.resolve(func(req, res, next)).catch(next);
+
+    - When you use TryCatch with a function (e.g., addUser), it returns a new function.
+    - This new function takes the standard Express req, res, and next arguments.
+    - Inside this function:
+        It calls your original function (func(req, res, next)) and wraps it in Promise.resolve() to make sure it always returns a Promise.
+    - If the original function resolves successfully (no errors), everything continues as normal.
+    - If there's an error inside the original function:
+    - The catch(next) part catches the error.
+    - It then calls the next function with the error, effectively passing the error to the Express error-handling middleware.
+
+    Why This Is Useful:
+        - It helps to avoid duplicating error-handling logic in every route handler.
+        - It centralizes error handling, making your code cleaner and more maintainable.
+        - You can focus on writing the main logic of your route handlers without getting bogged down by error-handling boilerplate.

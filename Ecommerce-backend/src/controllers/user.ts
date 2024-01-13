@@ -1,44 +1,27 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "../models/user.js";
 import { newUserRequestBody } from "../types/user.js";
+import ErrorHandler from "../utils/utility-class.js";
+import { TryCatch } from "../middlewares/error.js";
 
-export const addUser = async (
-    req: Request<{}, {}, newUserRequestBody>,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
-        return next(new Error());
-
-        const { name, email, photo, gender, dob, _id } = req.body;
-        // const userExists = await User.findOne({ email: req.body.email });
-
-        // if (userExists) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: "User already exists"
-        //     });
-        // }
-        const user = await User.create({
-            name, email, photo, gender, dob:new Date(dob), _id
-        });
-
-       
-
-        return res.status(200).json({
-            success: true,
-            message: `Welcome ${user.name}`
-        });
-
-    } catch (error: unknown) {
-        console.error(error);
-        if (error instanceof Error) {
-            return res.status(400).json({
-                success: false,
-                message: error.message
+//wrap the entire asynchronous function with TryCatch. 
+//This means that any errors that occur within the function will be caught and handled by the TryCatch function.
+export const addUser = TryCatch(
+    async (
+        req: Request<{}, {}, newUserRequestBody>,
+        res: Response,
+        next: NextFunction
+    ) => {
+        
+            const { name, email, photo, gender, dob, _id } = req.body;
+            const user = await User.create({
+                name, email, photo, gender, dob:new Date(dob), _id
             });
-        } else {
-            return next(error); // Pass non-Error types to the error-handling middleware
-        }
+    
+            return res.status(200).json({
+                success: true,
+                message: `Welcome ${user.name}`
+            });
+    
     }
-}
+)
