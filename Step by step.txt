@@ -1,3 +1,4 @@
+
 FRONTEND:
 (1) On terminal write command "vite@latest"
     - Give project name ..here : Ecommerce-frontend 
