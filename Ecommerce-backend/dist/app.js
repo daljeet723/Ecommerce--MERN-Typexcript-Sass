@@ -1,6 +1,7 @@
 import express from "express";
 //IMPORTING ROUTES
 import userRoute from "./routes/user.js";
+import productRoute from "./routes/product.js";
 import { connectDB } from "./utils/features.js";
 import { errorMiddleware } from "./middlewares/error.js";
 var port = 4000;
@@ -14,6 +15,9 @@ app.get("/", function (req, res) {
 });
 //USING ROUTES
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/product", productRoute);
+//to display images which are in uploads folder
+app.use("/uploads", express.static("uploads"));
 //always use custom error handler middleware after calling all routes.
 //This middleware will be called when next() is called in APIs.
 app.use(errorMiddleware);

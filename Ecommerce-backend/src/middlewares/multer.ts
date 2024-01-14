@@ -5,6 +5,7 @@
 //middleware for handling multipart/form-data, 
 //which is primarily used for uploading files.
 import multer from "multer";
+import {v4 as uuid} from "uuid"
 
 // Configure multer storage settings, stores files on the server's disk.
 const storage = multer.diskStorage({
@@ -20,7 +21,12 @@ const storage = multer.diskStorage({
     filename(req, file, callback) {
         // 'null' indicates that there is no error
         // 'file.originalname' is the original name of the uploaded file
-        callback(null, file.originalname)
+
+        //automatically generate id using uuid library
+        const id = uuid();
+        //eg machine.book.png, return png bcz of pop()
+        const fileExtension = file.originalname.split(".").pop();
+        callback(null, `${id}.${fileExtension}`)
     }
 });
 

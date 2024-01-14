@@ -36,7 +36,6 @@ export const addUser = TryCatch(
                 success: true,
                 message: `Welcome ${user.name}`
             });
-    
     }
 )
 
