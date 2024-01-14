@@ -35,14 +35,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { User } from "../models/user.js";
+import ErrorHandler from "../utils/utility-class.js";
 import { TryCatch } from "../middlewares/error.js";
-//paas function as argument to TryCatch in error.ts file
+//wrap the entire asynchronous function with TryCatch. 
+//This means that any errors that occur within the function will be caught and handled by the TryCatch function.
 export var addUser = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, name, email, photo, gender, dob, _id, user;
+    var _a, name, email, photo, gender, dob, _id, oldUser, user;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _a = req.body, name = _a.name, email = _a.email, photo = _a.photo, gender = _a.gender, dob = _a.dob, _id = _a._id;
+                return [4 /*yield*/, User.findById(_id)];
+            case 1:
+                oldUser = _b.sent();
+                //if user already exists
+                if (oldUser) {
+                    return [2 /*return*/, res.status(200).json({
+                            success: true,
+                            message: "Welcome back ".concat(oldUser.name)
+                        })];
+                }
+                if (!_id || !name || !email || !photo || !gender || !dob) {
+                    return [2 /*return*/, next(new ErrorHandler("All fields are mandatory!!", 400))];
+                }
                 return [4 /*yield*/, User.create({
                         name: name,
                         email: email,
@@ -51,11 +66,68 @@ export var addUser = TryCatch(function (req, res, next) { return __awaiter(void 
                         dob: new Date(dob),
                         _id: _id
                     })];
-            case 1:
+            case 2:
                 user = _b.sent();
-                return [2 /*return*/, res.status(200).json({
+                return [2 /*return*/, res.status(201).json({
                         success: true,
                         message: "Welcome ".concat(user.name)
+                    })];
+        }
+    });
+}); });
+//GET ALL USERS FOR ADMIN
+export var getAllUsers = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var users;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, User.find()];
+            case 1:
+                users = _a.sent();
+                return [2 /*return*/, res.status(200).json({
+                        success: true,
+                        users: users
+                    })];
+        }
+    });
+}); });
+export var getUserById = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, user;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = req.params._id;
+                return [4 /*yield*/, User.findById(id)];
+            case 1:
+                user = _a.sent();
+                if (!user) {
+                    return [2 /*return*/, next(new ErrorHandler("Cannot find user", 400))];
+                }
+                return [2 /*return*/, res.status(200).json({
+                        success: true,
+                        user: user
+                    })];
+        }
+    });
+}); });
+//DELETE USER
+export var deleteUserById = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, user;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = req.params._id;
+                return [4 /*yield*/, User.findById(id)];
+            case 1:
+                user = _a.sent();
+                if (!user) {
+                    return [2 /*return*/, next(new ErrorHandler("Cannot find user", 400))];
+                }
+                return [4 /*yield*/, user.deleteOne()];
+            case 2:
+                _a.sent();
+                return [2 /*return*/, res.status(200).json({
+                        success: true,
+                        message: "User deleted succesfully"
                     })];
         }
     });

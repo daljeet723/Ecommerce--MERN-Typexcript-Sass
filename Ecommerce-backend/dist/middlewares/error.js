@@ -10,12 +10,14 @@ export var errorMiddleware = function (err, req, res, next) {
         message: err.message
     });
 };
-//Handle Try-Catch with arguments taken from controllerType in types.ts file.
-//return call back function
+//This is a higher-order function called TryCatch. 
+//It takes another function func (assumed to be an asynchronous function) 
+//and returns a new function that wraps the original function (func) in a try-catch block.
 export var TryCatch = function (func) {
-    //these req, res, next arguments coming from API function
     return function (req, res, next) {
         return Promise.resolve(func(req, res, next)).catch(next);
-        //catch(next) it will return error as we are sending error in next()
+        //If an error occurs inside the original function, 
+        //it's caught by the catch block, and the next function is called with the error.
     };
 };
+//Stp by step working in learning file
