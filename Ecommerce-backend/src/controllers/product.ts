@@ -49,7 +49,7 @@ export const getLatestProduct = TryCatch(async(req,res,next)=>{
     return res.status(200).json({
         success:true,
         products
-    })
+    });
 });
 
 export const getAllCategories = TryCatch(async(req, res,next)=>{
@@ -57,5 +57,15 @@ export const getAllCategories = TryCatch(async(req, res,next)=>{
     return res.status(200).json({
         success:true,
         categories
-    })
+    });
+});
+
+export const getAdminProducts = TryCatch(async(req, res, next)=>{
+    const products = await Product.find({});
+
+    return res.status(200).json({
+        success:true,
+        products
+    });
+
 })
