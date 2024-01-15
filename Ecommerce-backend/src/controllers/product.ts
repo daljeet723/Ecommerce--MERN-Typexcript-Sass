@@ -37,4 +37,17 @@ export const addProduct = TryCatch(async (
         success: true,
         message: "Product created successfully"
     })
+});
+
+
+export const getLatestProduct = TryCatch(async(req,res,next)=>{
+
+    //get all prodcuts and sort them in desc order according to created time
+    //createdAt:-1 indicates desc order
+    const products = await Product.find({}).sort({createdAt:-1}).limit(5);
+
+    return res.status(200).json({
+        success:true,
+        products
+    })
 })

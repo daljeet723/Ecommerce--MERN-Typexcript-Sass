@@ -72,3 +72,17 @@ export var addProduct = TryCatch(function (req, res, next) { return __awaiter(vo
         }
     });
 }); });
+export var getLatestProduct = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var products;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Product.find({}).sort({ createdAt: -1 }).limit(5)];
+            case 1:
+                products = _a.sent();
+                return [2 /*return*/, res.status(200).json({
+                        success: true,
+                        products: products
+                    })];
+        }
+    });
+}); });
