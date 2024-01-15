@@ -86,3 +86,17 @@ export var getLatestProduct = TryCatch(function (req, res, next) { return __awai
         }
     });
 }); });
+export var getAllCategories = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var categories;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Product.distinct("category")];
+            case 1:
+                categories = _a.sent();
+                return [2 /*return*/, res.status(200).json({
+                        success: true,
+                        categories: categories
+                    })];
+        }
+    });
+}); });

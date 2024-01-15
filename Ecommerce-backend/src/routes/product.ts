@@ -1,6 +1,6 @@
 import express from "express";
 import { isAdmin } from "../middlewares/auth.js";
-import { addProduct, getLatestProduct } from "../controllers/product.js";
+import { addProduct, getAllCategories, getLatestProduct } from "../controllers/product.js";
 import { singleUpload } from "../middlewares/multer.js";
 
 const app = express.Router();
@@ -11,5 +11,7 @@ const app = express.Router();
 app.post("/new",isAdmin, singleUpload, addProduct);
 
 app.get("/latest",getLatestProduct);
+
+app.get("/categories",getAllCategories)
 
 export default app;

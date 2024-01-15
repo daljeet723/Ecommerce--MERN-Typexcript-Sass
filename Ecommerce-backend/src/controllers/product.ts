@@ -50,4 +50,12 @@ export const getLatestProduct = TryCatch(async(req,res,next)=>{
         success:true,
         products
     })
+});
+
+export const getAllCategories = TryCatch(async(req, res,next)=>{
+    const categories = await Product.distinct("category")
+    return res.status(200).json({
+        success:true,
+        categories
+    })
 })
