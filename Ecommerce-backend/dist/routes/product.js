@@ -1,6 +1,6 @@
 import express from "express";
 import { isAdmin } from "../middlewares/auth.js";
-import { addProduct, getAdminProducts, getAllCategories, getLatestProduct } from "../controllers/product.js";
+import { addProduct, getAdminProducts, getAllCategories, getLatestProduct, getSingleProduct, updateProduct } from "../controllers/product.js";
 import { singleUpload } from "../middlewares/multer.js";
 var app = express.Router();
 //instead of using raw, use form-data in req.body from postman
@@ -13,4 +13,5 @@ app.get("/latest", getLatestProduct);
 app.get("/categories", getAllCategories);
 //To get all Products   - /api/v1/product/admin-products
 app.get("/admin-products", getAdminProducts);
+app.route("/:id").get(getSingleProduct).put(singleUpload, updateProduct);
 export default app;

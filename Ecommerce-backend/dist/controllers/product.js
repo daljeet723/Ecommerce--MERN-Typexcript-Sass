@@ -114,3 +114,54 @@ export var getAdminProducts = TryCatch(function (req, res, next) { return __awai
         }
     });
 }); });
+export var getSingleProduct = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var product;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Product.findById(req.params.id)];
+            case 1:
+                product = _a.sent();
+                // if(!product){
+                //     return next(new ErrorHandler("Product does not exists",404));
+                // }
+                return [2 /*return*/, res.status(200).json({
+                        success: true,
+                        product: product
+                    })];
+        }
+    });
+}); });
+export var updateProduct = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, name, price, stock, category, photo;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = req.body, name = _a.name, price = _a.price, stock = _a.stock, category = _a.category;
+                photo = req.file;
+                if (!photo) {
+                    return [2 /*return*/, next(new ErrorHandler("Please add photo!!", 400))];
+                }
+                if (!name || !price || !stock || !category) {
+                    //when user second time upload all missing details, 
+                    //photo will agin be uploaded so delete it to avoid duplicasy
+                    rm(photo.path, function () {
+                        console.log("Photo deleted");
+                    });
+                    return [2 /*return*/, next(new ErrorHandler("All fields are mandatory!!", 400))];
+                }
+                return [4 /*yield*/, Product.create({
+                        name: name,
+                        price: price,
+                        stock: stock,
+                        category: category.toLowerCase(),
+                        photo: photo.path
+                    })];
+            case 1:
+                _b.sent();
+                return [2 /*return*/, res.status(201).json({
+                        success: true,
+                        message: "Product created successfully"
+                    })];
+        }
+    });
+}); });

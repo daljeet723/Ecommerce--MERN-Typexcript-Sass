@@ -68,4 +68,52 @@ export const getAdminProducts = TryCatch(async(req, res, next)=>{
         products
     });
 
-})
+});
+
+export const getSingleProduct = TryCatch(async(req, res, next)=>{
+   
+    const product = await Product.findById(req.params.id);
+
+    // if(!product){
+    //     return next(new ErrorHandler("Product does not exists",404));
+    // }
+
+    return res.status(200).json({
+        success:true,
+        product
+    })
+});
+
+export const updateProduct =TryCatch(async (
+    req: Request<{}, {}, newProductRequestBody>,
+    res: Response,
+    next: NextFunction) => {
+
+    const { name, price, stock, category } = req.body;
+
+    const photo = req.file;
+
+    if (!photo) {
+        return next(new ErrorHandler("Please add photo!!", 400))
+    }
+
+    if (!name || !price || !stock || !category) {
+        //when user second time upload all missing details, 
+        //photo will agin be uploaded so delete it to avoid duplicasy
+        rm(photo.path, () => {
+            console.log("Photo deleted");
+        });
+
+        return next(new ErrorHandler("All fields are mandatory!!", 400))
+    }
+
+    await Product.create({
+        name, price, stock, category: category.toLowerCase(),
+        photo: photo.path
+    });
+
+    return res.status(201).json({
+        success: true,
+        message: "Product created successfully"
+    })
+});
