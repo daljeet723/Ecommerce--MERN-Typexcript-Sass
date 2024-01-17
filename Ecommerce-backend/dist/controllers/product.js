@@ -136,7 +136,7 @@ export var updateProduct = TryCatch(function (req, res, next) { return __awaiter
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                id = req.params;
+                id = req.params.id;
                 _a = req.body, name = _a.name, price = _a.price, stock = _a.stock, category = _a.category;
                 photo = req.file;
                 return [4 /*yield*/, Product.findById(id)];
