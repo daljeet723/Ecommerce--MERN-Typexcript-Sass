@@ -194,3 +194,41 @@ export var deleteProduct = TryCatch(function (req, res, next) { return __awaiter
         }
     });
 }); });
+export var searchProducts = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, search, price, category, sort, page, limit, skipPages, baseQuery, products;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = req.query, search = _a.search, price = _a.price, category = _a.category, sort = _a.sort;
+                page = Number(req.query.page) || 1;
+                limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
+                skipPages = limit * (page - 1);
+                baseQuery = {};
+                //if user searches product
+                if (search) {
+                    baseQuery.name = {
+                        $regex: search,
+                        options: "i" //case-insensitive
+                    };
+                }
+                //if user gives price filter
+                if (price) {
+                    baseQuery.price = {
+                        //display products whose price <= filter price
+                        $lte: Number(price)
+                    };
+                }
+                //if user filter prodcuts based on category
+                if (category) {
+                    baseQuery.category = category;
+                }
+                return [4 /*yield*/, Product.find(baseQuery).sort(sort && { price: sort === "asc" ? 1 : -1 })];
+            case 1:
+                products = _b.sent();
+                return [2 /*return*/, res.status(200).json({
+                        success: true,
+                        products: products
+                    })];
+        }
+    });
+}); });

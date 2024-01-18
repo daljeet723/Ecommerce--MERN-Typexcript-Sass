@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { TryCatch } from "../middlewares/error.js";
 import { Product } from "../models/product.js";
 import ErrorHandler from "../utils/utility-class.js";
-import { newProductRequestBody } from "../types/product.js";
+import {  baseQueryType, newProductRequestBody, searchProductQuery } from "../types/product.js";
 import { rm } from "fs";
 
 export const addProduct = TryCatch(async (
@@ -134,3 +134,58 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
         message:"Product deleted successfully"
     });
 });
+
+export const searchProducts = TryCatch(async(
+    req:Request<{},{},{},searchProductQuery>,
+    res, next)=>{
+
+    const {search, price, category, sort} = req.query;
+
+    //if pagination provided show that page products else show 1st page 
+    const page = Number(req.query.page)|| 1; //typecast page to Number
+
+    //per page products limit
+    const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
+    
+    //skip previous pages. example at page 2 skip previous 8 pages
+    const skipPages = limit * (page - 1);
+
+    //give baseQuery structure in types file
+    //mentioning in separate type file as all are optional parameters
+    const baseQuery : baseQueryType={}; 
+    
+    //if user searches product
+    if(search){
+        baseQuery.name={
+            $regex: search,
+            options : "i" //case-insensitive
+        }
+    }
+
+    //if user gives price filter
+    if(price){
+        baseQuery.price={
+            //display products whose price <= filter price
+            $lte: Number(price)
+
+        }
+    }
+    
+    //if user filter prodcuts based on category
+    if(category){
+        baseQuery.category= category
+    }
+
+    //sort && : if sort is selected
+    // -1 indicates descending order
+    const products = await Product.find(baseQuery).sort(
+        sort && {price: sort ==="asc"?1 : -1}
+    );
+
+
+    return res.status(200).json({
+        success: true,
+       products
+    })
+
+})

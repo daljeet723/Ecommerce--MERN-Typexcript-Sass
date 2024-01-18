@@ -14,3 +14,22 @@ export type controllerType = (
     res: Response,
     next: NextFunction
 ) => Promise<void | Response<any, Record<string, any>>>
+
+export type searchProductQuery = {
+    search?: string,//optional parameter
+    price?: string, //optional parameter
+    category?: string,//optional parameter
+    sort?: string,//optional parameter
+    page?: string,//optional parameter
+
+}
+
+export interface baseQueryType {
+    name?: {
+        $regex: string,
+        options: string
+    };
+    price?: { $lte: number };
+    category?: string
+
+}
