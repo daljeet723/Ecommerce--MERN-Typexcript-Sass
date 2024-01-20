@@ -1,9 +1,8 @@
 # Node.js
-node_modules/**/*
-dist
-dist/src
-dist/src/*
-dist/**/*
+# Node.js
+node_modules/
+dist/
+
 
 # Logs
 logs
@@ -11,7 +10,12 @@ logs
 
 # Dependency directory
 dependencies
+# Environment variables
+.env
 
-# Optional: OS generated files
+
+# macOS
 .DS_Store
-Thumbs.db
+
+# VSCode
+.vscode/
