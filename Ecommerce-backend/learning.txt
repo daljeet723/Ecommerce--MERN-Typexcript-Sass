@@ -17,3 +17,22 @@
         - It helps to avoid duplicating error-handling logic in every route handler.
         - It centralizes error handling, making your code cleaner and more maintainable.
         - You can focus on writing the main logic of your route handlers without getting bogged down by error-handling boilerplate.
+
+ =========================================
+
+(2) WHY PROMISE.ALL IS USED AS BOTH ARE LOGICALLY RELATED TO EACH OTHER:
+
+     const [products, filteredProducts] = await Promise.all([
+        productsPromise,//sorting products
+        Product.find(baseQuery)//filtered prodcuts
+    ]);
+        
+    - This code is waiting for both promises (productsPromise and filteredProductsPromise) 
+        to resolve using Promise.all. 
+    - Once both promises are resolved, their results are destructured into the products and filteredProducts variables, respectively.
+    - These two queries are indeed related because the filtering of products depends on the result of the sorting query.
+    - However, they are asynchronous operations that can be executed concurrently,
+         as MongoDB queries do not block the execution of other code.
+    - Even though the queries are logically related, 
+        Promise.all is used to initiate both queries concurrently and 
+        optimize the overall execution time by allowing asynchronous parallelism.

@@ -20,12 +20,14 @@ app.get("/categories", getAllCategories);
 //To get all Products   - /api/v1/product/admin-products
 app.get("/admin-products", getAdminProducts);
 
+//To get all Products with filters  - /api/v1/product/search
+app.get("/searchAndFilters", searchProducts);
+
+// ***place routes at last that accept dynmaic parameters ("/:id")
+// Single product route
 app.route("/:id")
     .get(getSingleProduct)
     .put(isAdmin, singleUpload, updateProduct)
     .delete(isAdmin, deleteProduct);
-
-//To get all Products with filters  - /api/v1/product/search
-app.get("/search",searchProducts);
 
 export default app;

@@ -27,7 +27,7 @@ export type searchProductQuery = {
 export interface baseQueryType {
     name?: {
         $regex: string,
-        options: string
+        $options: string
     };
     price?: { $lte: number };
     category?: string

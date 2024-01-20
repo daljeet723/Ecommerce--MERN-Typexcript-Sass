@@ -195,9 +195,9 @@ export var deleteProduct = TryCatch(function (req, res, next) { return __awaiter
     });
 }); });
 export var searchProducts = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, search, price, category, sort, page, limit, skipPages, baseQuery, products;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var _a, search, price, category, sort, page, limit, skipPages, baseQuery, productsPromise, _b, products, filteredProducts, totalPage;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
                 _a = req.query, search = _a.search, price = _a.price, category = _a.category, sort = _a.sort;
                 page = Number(req.query.page) || 1;
@@ -208,7 +208,7 @@ export var searchProducts = TryCatch(function (req, res, next) { return __awaite
                 if (search) {
                     baseQuery.name = {
                         $regex: search,
-                        options: "i" //case-insensitive
+                        $options: "i" //case-insensitive
                     };
                 }
                 //if user gives price filter
@@ -222,12 +222,21 @@ export var searchProducts = TryCatch(function (req, res, next) { return __awaite
                 if (category) {
                     baseQuery.category = category;
                 }
-                return [4 /*yield*/, Product.find(baseQuery).sort(sort && { price: sort === "asc" ? 1 : -1 })];
+                productsPromise = Product.find(baseQuery)
+                    .sort(sort && { price: sort === "asc" ? 1 : -1 })
+                    .limit(limit)
+                    .skip(skipPages);
+                return [4 /*yield*/, Promise.all([
+                        productsPromise,
+                        Product.find(baseQuery) //filtered prodcuts
+                    ])];
             case 1:
-                products = _b.sent();
+                _b = _c.sent(), products = _b[0], filteredProducts = _b[1];
+                totalPage = Math.ceil(filteredProducts.length / limit);
                 return [2 /*return*/, res.status(200).json({
                         success: true,
-                        products: products
+                        products: products,
+                        totalPage: totalPage
                     })];
         }
     });

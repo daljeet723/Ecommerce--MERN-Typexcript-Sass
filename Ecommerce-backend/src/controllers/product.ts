@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { TryCatch } from "../middlewares/error.js";
 import { Product } from "../models/product.js";
 import ErrorHandler from "../utils/utility-class.js";
-import {  baseQueryType, newProductRequestBody, searchProductQuery } from "../types/product.js";
+import { baseQueryType, newProductRequestBody, searchProductQuery } from "../types/product.js";
 import { rm } from "fs";
 
 export const addProduct = TryCatch(async (
@@ -85,7 +85,7 @@ export const getSingleProduct = TryCatch(async (req, res, next) => {
 
 export const updateProduct = TryCatch(async (req, res, next) => {
 
-    const {id} = req.params;
+    const { id } = req.params;
     const { name, price, stock, category } = req.body;
     const photo = req.file;
 
@@ -104,10 +104,10 @@ export const updateProduct = TryCatch(async (req, res, next) => {
         product.photo = photo.path;
     }
 
-    if(name) product.name = name;
-    if(price) product.price = price;
-    if(stock) product.stock = stock;
-    if(category) product.category = category;
+    if (name) product.name = name;
+    if (price) product.price = price;
+    if (stock) product.stock = stock;
+    if (category) product.category = category;
 
     await product.save();
 
@@ -131,61 +131,73 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
 
     return res.status(200).json({
         success: true,
-        message:"Product deleted successfully"
+        message: "Product deleted successfully"
     });
 });
 
-export const searchProducts = TryCatch(async(
-    req:Request<{},{},{},searchProductQuery>,
-    res, next)=>{
+export const searchProducts = TryCatch(async (
+    req: Request<{}, {}, {}, searchProductQuery>,
+    res, next) => {
 
-    const {search, price, category, sort} = req.query;
+    // Extract query parameters from the request
+    const { search, price, category, sort } = req.query;
 
-    //if pagination provided show that page products else show 1st page 
-    const page = Number(req.query.page)|| 1; //typecast page to Number
-
-    //per page products limit
-    const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
-    
-    //skip previous pages. example at page 2 skip previous 8 pages
-    const skipPages = limit * (page - 1);
+     // Set up pagination parameters
+        //if pagination provided show that page products else show 1st page 
+        const page = Number(req.query.page) || 1; //typecast page to Number
+        const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
+        const skipPages = limit * (page - 1);
 
     //give baseQuery structure in types file
     //mentioning in separate type file as all are optional parameters
-    const baseQuery : baseQueryType={}; 
-    
+    // Create a base query object
+    const baseQuery: baseQueryType = {};
+
     //if user searches product
-    if(search){
-        baseQuery.name={
+    if (search) {
+        baseQuery.name = {
             $regex: search,
-            options : "i" //case-insensitive
+            $options: "i" //case-insensitive
         }
     }
 
     //if user gives price filter
-    if(price){
-        baseQuery.price={
+    if (price) {
+        baseQuery.price = {
             //display products whose price <= filter price
             $lte: Number(price)
 
         }
     }
-    
+
     //if user filter prodcuts based on category
-    if(category){
-        baseQuery.category= category
+    if (category) {
+        baseQuery.category = category
     }
 
     //sort && : if sort is selected
     // -1 indicates descending order
-    const products = await Product.find(baseQuery).sort(
-        sort && {price: sort ==="asc"?1 : -1}
-    );
+    //sort products
+    const productsPromise = Product.find(baseQuery)
+        .sort(sort && { price: sort === "asc" ? 1 : -1 })
+        .limit(limit)
+        .skip(skipPages);
 
+    // Fetch both the paginated products and the total filtered products
+    //***why promise.all is used: in learning.txt file */
+    const [products, filteredProducts] = await Promise.all([
+        productsPromise,
+        Product.find(baseQuery)//filtered prodcuts
+    ]);
+
+    //ceil of 10.4 -> 10
+    // Calculate the total number of pages based on the filtered products and the per-page limit
+    const totalPage = Math.ceil(filteredProducts.length / limit);
 
     return res.status(200).json({
         success: true,
-       products
-    })
+        products,
+        totalPage
+    });
 
 })
