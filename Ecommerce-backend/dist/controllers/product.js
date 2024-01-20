@@ -38,6 +38,7 @@ import { TryCatch } from "../middlewares/error.js";
 import { Product } from "../models/product.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
+import { faker } from "@faker-js/faker";
 export var addProduct = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, name, price, stock, category, photo;
     return __generator(this, function (_b) {
@@ -241,3 +242,35 @@ export var searchProducts = TryCatch(function (req, res, next) { return __awaite
         }
     });
 }); });
+var generateRandomProducts = function (count) {
+    if (count === void 0) { count = 10; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var products, i, product;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    products = [];
+                    for (i = 0; i < count; i++) {
+                        product = {
+                            name: faker.commerce.productName(),
+                            photo: "uploads\\dca59fd0-d721-4463-87af-86beb6dd3902.jpg",
+                            price: faker.commerce.price({ min: 1500, max: 80000, dec: 0 }),
+                            stock: faker.commerce.price({ min: 0, max: 100, dec: 0 }),
+                            category: faker.commerce.department(),
+                            createdAt: new Date(faker.date.past()),
+                            updatedAt: new Date(faker.date.recent()),
+                            __v: 0,
+                        };
+                        products.push(product);
+                    }
+                    return [4 /*yield*/, Product.create(products)];
+                case 1:
+                    _a.sent();
+                    console.log({ succecss: true });
+                    return [2 /*return*/];
+            }
+        });
+    });
+};
+//uncomment below line whenever required to generate fake random products else comment it
+//generateRandomProducts();
