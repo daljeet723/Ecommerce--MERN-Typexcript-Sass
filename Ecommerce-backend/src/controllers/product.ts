@@ -203,29 +203,40 @@ export const searchProducts = TryCatch(async (
 
 });
 
-const generateRandomProducts = async (count: number = 10) => {
-  const products = [];
+// const generateRandomProducts = async (count: number = 10) => {
+//   const products = [];
 
-  for (let i = 0; i < count; i++) {
-    const product = {
-      name: faker.commerce.productName(),
-      photo: "uploads\\dca59fd0-d721-4463-87af-86beb6dd3902.jpg",
-      price: faker.commerce.price({ min: 1500, max: 80000, dec: 0 }),
-      stock: faker.commerce.price({ min: 0, max: 100, dec: 0 }),
-      category: faker.commerce.department(),
-      createdAt: new Date(faker.date.past()),
-      updatedAt: new Date(faker.date.recent()),
-      __v: 0,
-    };
+//   for (let i = 0; i < count; i++) {
+//     const product = {
+//       name: faker.commerce.productName(),
+//       photo: "uploads\\dca59fd0-d721-4463-87af-86beb6dd3902.jpg",
+//       price: faker.commerce.price({ min: 1500, max: 80000, dec: 0 }),
+//       stock: faker.commerce.price({ min: 0, max: 100, dec: 0 }),
+//       category: faker.commerce.department(),
+//       createdAt: new Date(faker.date.past()),
+//       updatedAt: new Date(faker.date.recent()),
+//       __v: 0,
+//     };
 
-    products.push(product);
-  }
+//     products.push(product);
+//   }
 
-  await Product.create(products);
+//   await Product.create(products);
 
-  console.log({ succecss: true });
-};
+//   console.log({ succecss: true });
+// };
 //uncomment below line whenever required to generate fake random products else comment it
 //generateRandomProducts();
 
+// const deleteRandomsProducts = async (count: number = 10) => {
+//   const products = await Product.find({}).skip(3);
 
+//   for (let i = 0; i < products.length; i++) {
+//     const product = products[i];
+//     await product.deleteOne();
+//   }
+
+//   console.log({ succecss: true });
+// };
+//uncomment below line whenever required to delete fake random products else comment it
+//deleteRandomsProducts(7);
