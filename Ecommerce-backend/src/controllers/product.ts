@@ -6,6 +6,7 @@ import { baseQueryType, newProductRequestBody, searchProductQuery } from "../typ
 import { rm } from "fs";
 import { faker } from "@faker-js/faker";
 import { myCache } from "../app.js";
+import { invalidateCache } from "../utils/features.js";
 
 
 // Revalidate on New,Update,Delete Product & on New Order
@@ -119,6 +120,9 @@ export const addProduct = TryCatch(async (
         photo: photo.path
     });
 
+    //whenevr new product created refresh/ delete the  products in cache
+    await invalidateCache({product:true});
+
     return res.status(201).json({
         success: true,
         message: "Product created successfully"
@@ -153,6 +157,9 @@ export const updateProduct = TryCatch(async (req, res, next) => {
 
     await product.save();
 
+     //whenevr product is updated refresh/ delete the  products in cache
+     await invalidateCache({product:true});
+
     return res.status(200).json({
         success: true,
         message: "Product details updated successfully"
@@ -169,7 +176,10 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
     rm(product.photo!, () => {
         console.log("Old existing photo deleted");
     });
-    await product.deleteOne()
+    await product.deleteOne();
+
+     //whenevr product is deleted refresh/ delete the  products in cache
+     await invalidateCache({product:true});
 
     return res.status(200).json({
         success: true,

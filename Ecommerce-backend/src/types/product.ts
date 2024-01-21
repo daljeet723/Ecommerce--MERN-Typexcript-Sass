@@ -33,3 +33,13 @@ export interface baseQueryType {
     category?: string
 
 }
+
+export type invalidateCacheProp={
+    product?: boolean,
+    order?: boolean,
+    admin?: boolean,
+    userId?: string,
+    oderId?: string,
+    productId?: string | string[],
+
+}

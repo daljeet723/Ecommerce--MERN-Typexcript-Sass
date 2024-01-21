@@ -39,6 +39,7 @@ import { Product } from "../models/product.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
 import { myCache } from "../app.js";
+import { invalidateCache } from "../utils/features.js";
 // Revalidate on New,Update,Delete Product & on New Order
 export var getLatestProduct = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var products;
@@ -156,6 +157,11 @@ export var addProduct = TryCatch(function (req, res, next) { return __awaiter(vo
                     })];
             case 1:
                 _b.sent();
+                //whenevr new product created refresh/ delete the  products in cache
+                return [4 /*yield*/, invalidateCache({ product: true })];
+            case 2:
+                //whenevr new product created refresh/ delete the  products in cache
+                _b.sent();
                 return [2 /*return*/, res.status(201).json({
                         success: true,
                         message: "Product created successfully"
@@ -196,6 +202,11 @@ export var updateProduct = TryCatch(function (req, res, next) { return __awaiter
                 return [4 /*yield*/, product.save()];
             case 2:
                 _b.sent();
+                //whenevr product is updated refresh/ delete the  products in cache
+                return [4 /*yield*/, invalidateCache({ product: true })];
+            case 3:
+                //whenevr product is updated refresh/ delete the  products in cache
+                _b.sent();
                 return [2 /*return*/, res.status(200).json({
                         success: true,
                         message: "Product details updated successfully"
@@ -218,6 +229,11 @@ export var deleteProduct = TryCatch(function (req, res, next) { return __awaiter
                 });
                 return [4 /*yield*/, product.deleteOne()];
             case 2:
+                _a.sent();
+                //whenevr product is deleted refresh/ delete the  products in cache
+                return [4 /*yield*/, invalidateCache({ product: true })];
+            case 3:
+                //whenevr product is deleted refresh/ delete the  products in cache
                 _a.sent();
                 return [2 /*return*/, res.status(200).json({
                         success: true,
