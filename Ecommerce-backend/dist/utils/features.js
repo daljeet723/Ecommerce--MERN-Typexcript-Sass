@@ -37,8 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 import mongoose from "mongoose";
 import { myCache } from "../app.js";
 import { Product } from "../models/product.js";
-export var connectDB = function () {
-    mongoose.connect("mongodb://0.0.0.0:27017/Ecommerce_2024", {
+export var connectDB = function (uri) {
+    mongoose.connect(uri, {
         dbName: "Ecommerce_2024"
     }).then(function (c) { return console.log("Database connected to ".concat(c.connection.host)); })
         .catch(function (e) { return console.log(e); });

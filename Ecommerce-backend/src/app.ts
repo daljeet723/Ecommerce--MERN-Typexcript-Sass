@@ -3,15 +3,22 @@ import express from "express";
 //IMPORTING ROUTES
 import userRoute from "./routes/user.js";
 import productRoute from "./routes/product.js";
+import orderRoute from "./routes/order.js";
 import { connectDB } from "./utils/features.js";
 import { errorMiddleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
+import {config} from "dotenv";
 
 
-const port = 4000;
+//call congif at top to access env variables
+config({
+  path:"./.env" 
+});
+
+const port = process.env.PORT || 4000;
 const app = express();
 
-connectDB();
+connectDB(process.env.MONGO_URI || "");
 
 //stores cached data in the computer's RAM 
 //When you create an instance of node-cache, 
@@ -33,6 +40,8 @@ app.get("/", (req, res) => {
 app.use("/api/v1/user",userRoute);
 
 app.use("/api/v1/product",productRoute);
+
+app.use("/api/v1/order", orderRoute);
 
 //to display images which are in uploads folder
 app.use("/uploads",express.static("uploads"));
