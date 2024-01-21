@@ -5,12 +5,19 @@ import userRoute from "./routes/user.js";
 import productRoute from "./routes/product.js";
 import { connectDB } from "./utils/features.js";
 import { errorMiddleware } from "./middlewares/error.js";
+import NodeCache from "node-cache";
 
 
 const port = 4000;
 const app = express();
 
 connectDB();
+
+//stores cached data in the computer's RAM 
+//When you create an instance of node-cache, 
+//it initializes an in-memory cache within your Node.js application, 
+//allowing you to store and retrieve data using keys.
+export const myCache = new NodeCache();
 
 //Always use middleware before calling routes
 //use middleware so that whenever we give req.body it should accept all parameters in json format

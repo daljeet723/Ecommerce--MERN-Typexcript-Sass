@@ -38,6 +38,97 @@ import { TryCatch } from "../middlewares/error.js";
 import { Product } from "../models/product.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
+import { myCache } from "../app.js";
+// Revalidate on New,Update,Delete Product & on New Order
+export var getLatestProduct = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var products;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!myCache.has("latest-product")) return [3 /*break*/, 1];
+                products = JSON.parse(myCache.get("latest-product"));
+                return [3 /*break*/, 3];
+            case 1: return [4 /*yield*/, Product.find({}).sort({ createdAt: -1 }).limit(5)];
+            case 2:
+                //get all prodcuts and sort them in desc order according to created time
+                //createdAt: -1 indicates desc order
+                products = _a.sent();
+                //store products in cache
+                myCache.set("latest-product", JSON.stringify(products));
+                _a.label = 3;
+            case 3: return [2 /*return*/, res.status(200).json({
+                    success: true,
+                    products: products
+                })];
+        }
+    });
+}); });
+// Revalidate on New,Update,Delete Product & on New Order
+export var getAllCategories = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var categories;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!myCache.has("categories")) return [3 /*break*/, 1];
+                categories = JSON.parse(myCache.get("categories"));
+                return [3 /*break*/, 3];
+            case 1: return [4 /*yield*/, Product.distinct("category")];
+            case 2:
+                categories = _a.sent();
+                myCache.set("categories", JSON.stringify(categories));
+                _a.label = 3;
+            case 3: return [2 /*return*/, res.status(200).json({
+                    success: true,
+                    categories: categories
+                })];
+        }
+    });
+}); });
+// Revalidate on New,Update,Delete Product & on New Order
+export var getAdminProducts = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var products;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!myCache.has("all-products")) return [3 /*break*/, 1];
+                products = JSON.parse(myCache.get("all-products"));
+                return [3 /*break*/, 3];
+            case 1: return [4 /*yield*/, Product.find({})];
+            case 2:
+                products = _a.sent();
+                myCache.set("all-products", JSON.stringify(products));
+                _a.label = 3;
+            case 3: return [2 /*return*/, res.status(200).json({
+                    success: true,
+                    products: products
+                })];
+        }
+    });
+}); });
+export var getSingleProduct = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var product, id;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = req.params.id;
+                if (!myCache.has("product-".concat(id))) return [3 /*break*/, 1];
+                product = JSON.parse(myCache.get("product-".concat(id)));
+                return [3 /*break*/, 3];
+            case 1: return [4 /*yield*/, Product.findById(id)];
+            case 2:
+                product = _a.sent();
+                if (!product) {
+                    return [2 /*return*/, next(new ErrorHandler("Product not found", 404))];
+                }
+                myCache.set("product-".concat(id), JSON.stringify(product));
+                _a.label = 3;
+            case 3: return [2 /*return*/, res.status(200).json({
+                    success: true,
+                    product: product
+                })];
+        }
+    });
+}); });
 export var addProduct = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, name, price, stock, category, photo;
     return __generator(this, function (_b) {
@@ -68,65 +159,6 @@ export var addProduct = TryCatch(function (req, res, next) { return __awaiter(vo
                 return [2 /*return*/, res.status(201).json({
                         success: true,
                         message: "Product created successfully"
-                    })];
-        }
-    });
-}); });
-export var getLatestProduct = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var products;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, Product.find({}).sort({ createdAt: -1 }).limit(5)];
-            case 1:
-                products = _a.sent();
-                return [2 /*return*/, res.status(200).json({
-                        success: true,
-                        products: products
-                    })];
-        }
-    });
-}); });
-export var getAllCategories = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var categories;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, Product.distinct("category")];
-            case 1:
-                categories = _a.sent();
-                return [2 /*return*/, res.status(200).json({
-                        success: true,
-                        categories: categories
-                    })];
-        }
-    });
-}); });
-export var getAdminProducts = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var products;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, Product.find({})];
-            case 1:
-                products = _a.sent();
-                return [2 /*return*/, res.status(200).json({
-                        success: true,
-                        products: products
-                    })];
-        }
-    });
-}); });
-export var getSingleProduct = TryCatch(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var product;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, Product.findById(req.params.id)];
-            case 1:
-                product = _a.sent();
-                if (!product) {
-                    return [2 /*return*/, next(new ErrorHandler("Product not found", 404))];
-                }
-                return [2 /*return*/, res.status(200).json({
-                        success: true,
-                        product: product
                     })];
         }
     });
