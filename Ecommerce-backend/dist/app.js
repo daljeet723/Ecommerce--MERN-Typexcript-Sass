@@ -7,6 +7,7 @@ import { connectDB } from "./utils/features.js";
 import { errorMiddleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
 import { config } from "dotenv";
+import morgan from "morgan";
 //call congif at top to access env variables
 config({
     path: "./.env"
@@ -22,6 +23,8 @@ export var myCache = new NodeCache();
 //Always use middleware before calling routes
 //use middleware so that whenever we give req.body it should accept all parameters in json format
 app.use(express.json());
+//gives API call information on console(status, runtime,..)
+app.use(morgan("dev"));
 app.get("/", function (req, res) {
     res.send("API is Working with /api/v1");
 });
