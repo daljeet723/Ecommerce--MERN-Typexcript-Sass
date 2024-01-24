@@ -24,6 +24,7 @@ export var myCache = new NodeCache();
 //use middleware so that whenever we give req.body it should accept all parameters in json format
 app.use(express.json());
 //gives API call information on console(status, runtime,..)
+//The "dev" format is particularly useful during development and debugging.
 app.use(morgan("dev"));
 app.get("/", function (req, res) {
     res.send("API is Working with /api/v1");
