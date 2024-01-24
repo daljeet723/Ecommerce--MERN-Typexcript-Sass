@@ -121,7 +121,7 @@ export const addProduct = TryCatch(async (
     });
 
     //whenevr new product created refresh/ delete the  products in cache
-    await invalidateCache({product:true});
+    await invalidateCache({ product: true });
 
     return res.status(201).json({
         success: true,
@@ -157,8 +157,8 @@ export const updateProduct = TryCatch(async (req, res, next) => {
 
     await product.save();
 
-     //whenevr product is updated refresh/ delete the  products in cache
-     await invalidateCache({product:true});
+    //whenevr product is updated refresh/ delete the  products in cache
+    await invalidateCache({ product: true });
 
     return res.status(200).json({
         success: true,
@@ -178,8 +178,8 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
     });
     await product.deleteOne();
 
-     //whenevr product is deleted refresh/ delete the  products in cache
-     await invalidateCache({product:true});
+    //whenevr product is deleted refresh/ delete the  products in cache
+    await invalidateCache({ product: true });
 
     return res.status(200).json({
         success: true,

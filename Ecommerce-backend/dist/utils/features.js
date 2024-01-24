@@ -69,3 +69,31 @@ export var invalidateCache = function (_a) {
         });
     });
 };
+export var reduceStock = function (orderItems) { return __awaiter(void 0, void 0, void 0, function () {
+    var i, order, product;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                i = 0;
+                _a.label = 1;
+            case 1:
+                if (!(i < orderItems.length)) return [3 /*break*/, 5];
+                order = orderItems[i];
+                return [4 /*yield*/, Product.findById(order.productId)];
+            case 2:
+                product = _a.sent();
+                if (!product) {
+                    throw new Error("Product not found");
+                }
+                product.stock -= order.quantity;
+                return [4 /*yield*/, product.save()];
+            case 3:
+                _a.sent();
+                _a.label = 4;
+            case 4:
+                i++;
+                return [3 /*break*/, 1];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
