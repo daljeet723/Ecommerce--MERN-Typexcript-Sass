@@ -32,6 +32,7 @@ export const myCache = new NodeCache();
 app.use(express.json());
 
 //gives API call information on console(status, runtime,..)
+//The "dev" format is particularly useful during development and debugging.
 app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
