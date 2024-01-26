@@ -61,7 +61,8 @@ export const allOrders = TryCatch(async (req, res, next) => {
         orders = JSON.parse(myCache.get(key) as string);
     }
     else {
-        orders = await Order.find();
+        //populate name field from user schema. If you want to fetch all user data write populate("user")
+        orders = await Order.find().populate("user", "name");
         myCache.set(key, JSON.stringify(orders));
     }
 
@@ -70,4 +71,26 @@ export const allOrders = TryCatch(async (req, res, next) => {
         orders
     })
 
+});
+
+export const getSingleOrder = TryCatch(async (req, res, next) => {
+    const id = req.params.id;
+    const key = `order-${id}`;
+
+    let order;
+    if (myCache.has(key)) {
+        order = JSON.parse(myCache.get(key) as string);
+    }
+    else {
+        order = await Order.findById(id).populate("user","name");
+        if(!order){
+            return next(new ErrorHandler("Order not found",404));
+        }
+        myCache.set(key, JSON.stringify(order));
+    }
+
+    return res.status(200).json({
+        success: true,
+        order
+    })
 })
