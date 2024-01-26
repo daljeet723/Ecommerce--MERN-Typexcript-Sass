@@ -82,9 +82,9 @@ export const getSingleOrder = TryCatch(async (req, res, next) => {
         order = JSON.parse(myCache.get(key) as string);
     }
     else {
-        order = await Order.findById(id).populate("user","name");
-        if(!order){
-            return next(new ErrorHandler("Order not found",404));
+        order = await Order.findById(id).populate("user", "name");
+        if (!order) {
+            return next(new ErrorHandler("Order not found", 404));
         }
         myCache.set(key, JSON.stringify(order));
     }
@@ -93,4 +93,33 @@ export const getSingleOrder = TryCatch(async (req, res, next) => {
         success: true,
         order
     })
+});
+
+export const processOrder = TryCatch(async (req, res, next) => {
+    const { id } = req.params;
+    const order = await Order.findById(id);
+    if (!order) {
+        return next(new ErrorHandler("Order Not Found", 404))
+    }
+
+    switch (order.status) {
+        case "Processing":
+            order.status = "Shipped";
+            break;
+        case "Shipped":
+            order.status = "Delivered";
+            break;
+        default:
+            order.status = "Delivered"
+
+    }
+
+    await order.save();
+    await invalidateCache({product:false, order:true, admin:true});
+
+    return res.status(200).json({
+        success:true,
+        message:"Order processed successfully..!!"
+    })
+
 })
