@@ -1,6 +1,6 @@
 import express from "express";
 import { isAdmin } from "../middlewares/auth.js";
-import { myOrders, newOrder } from "../controllers/order.js";
+import { allOrders, myOrders, newOrder } from "../controllers/order.js";
 
 const app = express.Router();
 
@@ -9,5 +9,8 @@ app.post("/new",newOrder );
 
 //ROUTE - /api/v1/order/my/?userId=sampleId101
 app.get("/my",myOrders);
+
+//ROUTE - /api/v1/order/all   --- adminOnly
+app.get("/all", isAdmin, allOrders);
 
 export default app;
