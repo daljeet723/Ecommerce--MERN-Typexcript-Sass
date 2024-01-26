@@ -39,7 +39,7 @@ export type invalidateCacheProp = {
     order?: boolean,
     admin?: boolean,
     userId?: string,
-    oderId?: string,
+    orderId?: string,
     productId?: string | string[],
 
 }

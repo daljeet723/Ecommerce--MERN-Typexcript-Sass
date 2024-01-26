@@ -27,7 +27,9 @@ export const newOrder = TryCatch(async (
     await reduceStock(orderItems);//function in utils/features.ts
 
     //it will refresh cache as product & order db is updated
-    await invalidateCache({ product: true, order: true, admin: true });
+    await invalidateCache({
+        product: true, order: true, admin: true, userId: user
+    });
 
     return res.status(201).json({
         success: true,
@@ -96,6 +98,7 @@ export const getSingleOrder = TryCatch(async (req, res, next) => {
 });
 
 export const processOrder = TryCatch(async (req, res, next) => {
+    //get order id from parameter
     const { id } = req.params;
     const order = await Order.findById(id);
     if (!order) {
@@ -115,11 +118,34 @@ export const processOrder = TryCatch(async (req, res, next) => {
     }
 
     await order.save();
-    await invalidateCache({product:false, order:true, admin:true});
+
+    await invalidateCache({
+        product: false, order: true, admin: true, userId: order.id, orderId: String(order._id)
+    });
 
     return res.status(200).json({
-        success:true,
-        message:"Order processed successfully..!!"
+        success: true,
+        message: "Order processed successfully..!!"
+    })
+
+});
+
+export const deleteOrder = TryCatch(async (req, res, next) => {
+    const { id } = req.params;
+    const order = await Order.findById(id);
+    if (!order) {
+        return next(new ErrorHandler("Order Not Found", 404))
+    }
+
+    await order.deleteOne();
+
+    await invalidateCache({
+        product: false, order: true, admin: true, userId: order.id, orderId: String(order._id)
+    });
+
+    return res.status(200).json({
+        success: true,
+        message: "Order deleted successfully..!!"
     })
 
 })

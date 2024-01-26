@@ -44,9 +44,9 @@ export var connectDB = function (uri) {
         .catch(function (e) { return console.log(e); });
 };
 export var invalidateCache = function (_a) {
-    var product = _a.product, order = _a.order, admin = _a.admin;
+    var product = _a.product, order = _a.order, admin = _a.admin, userId = _a.userId, orderId = _a.orderId;
     return __awaiter(void 0, void 0, void 0, function () {
-        var productKeys_1, products;
+        var productKeys_1, products, orderKeys;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -62,7 +62,10 @@ export var invalidateCache = function (_a) {
                     myCache.del(productKeys_1);
                     _b.label = 2;
                 case 2:
-                    if (order) { }
+                    if (order) {
+                        orderKeys = ["all-orders", "my-orders-".concat(userId), "order-".concat(orderId)];
+                        myCache.del(orderKeys);
+                    }
                     if (admin) { }
                     return [2 /*return*/];
             }
