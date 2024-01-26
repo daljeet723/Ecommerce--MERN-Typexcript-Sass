@@ -38,11 +38,13 @@ const schema = new mongoose.Schema({
     },
     discount: {
         type: Number,
-        required: true
+        required: true,
+        default:0
     },
     shippingCharges: {
         type: Number,
-        required: true
+        required: true,
+        default:0
     },
     total: {
         type: Number,
@@ -72,3 +74,31 @@ const schema = new mongoose.Schema({
 });
 
 export const Order = mongoose.model("Order", schema);
+
+
+// SAMPLE POSTMAN REQUEST
+// {
+//     "shippingInfo":{
+//         "address":"123 Kashmir Avenue",
+//         "city":"Mumbai",
+//         "state":"Maharashtra",
+//         "country":"India",
+//         "pinCode":"1234"
+//     },
+//     "orderItems":[
+//         {
+//      "name": "MacBook",
+//     "price": 92890,
+//     "photo": "uploads\\dca59fd0-d721-4463-87af-86beb6dd3902.jpg",
+//     "quantity": 4,
+//     "productId": "65a940d5bf7d614d52736fec"
+//     }
+//     ],
+//     "user":"sampleId101",
+//     "subTotal": 1250,
+//     "tax": 50,
+//     "discount": 200,
+//     "shippingCharges": 40,
+//     "total": 1140
+
+// }
