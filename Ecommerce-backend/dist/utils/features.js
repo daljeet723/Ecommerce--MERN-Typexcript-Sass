@@ -44,31 +44,28 @@ export var connectDB = function (uri) {
         .catch(function (e) { return console.log(e); });
 };
 export var invalidateCache = function (_a) {
-    var product = _a.product, order = _a.order, admin = _a.admin, userId = _a.userId, orderId = _a.orderId;
+    var product = _a.product, order = _a.order, admin = _a.admin, userId = _a.userId, orderId = _a.orderId, productId = _a.productId;
     return __awaiter(void 0, void 0, void 0, function () {
-        var productKeys_1, products, orderKeys;
+        var productKeys_1, orderKeys;
         return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    if (!product) return [3 /*break*/, 2];
-                    productKeys_1 = ["latest-product", "categories", "all-products"];
-                    return [4 /*yield*/, Product.find({}).select("_id")];
-                case 1:
-                    products = _b.sent();
-                    //get all id from products and push them in array for getSingleProduct API
-                    products.forEach(function (idx) {
-                        productKeys_1.push("product-".concat(idx._id));
-                    });
-                    myCache.del(productKeys_1);
-                    _b.label = 2;
-                case 2:
-                    if (order) {
-                        orderKeys = ["all-orders", "my-orders-".concat(userId), "order-".concat(orderId)];
-                        myCache.del(orderKeys);
-                    }
-                    if (admin) { }
-                    return [2 /*return*/];
+            if (product) {
+                productKeys_1 = ["latest-product", "categories", "all-products"];
+                //if there is change in single product
+                if (typeof productId === "string") {
+                    productKeys_1.push("product-".concat(productId));
+                }
+                //if productId is in array, if any new order is placed
+                if (typeof productId === "object") {
+                    productId.forEach(function (i) { return productKeys_1.push("product-".concat(i)); });
+                }
+                myCache.del(productKeys_1);
             }
+            if (order) {
+                orderKeys = ["all-orders", "my-orders-".concat(userId), "order-".concat(orderId)];
+                myCache.del(orderKeys);
+            }
+            if (admin) { }
+            return [2 /*return*/];
         });
     });
 };

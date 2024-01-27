@@ -158,7 +158,7 @@ export const updateProduct = TryCatch(async (req, res, next) => {
     await product.save();
 
     //whenevr product is updated refresh/ delete the  products in cache
-    await invalidateCache({ product: true });
+    await invalidateCache({ product: true, productId: String(product._id)});
 
     return res.status(200).json({
         success: true,
@@ -179,7 +179,7 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
     await product.deleteOne();
 
     //whenevr product is deleted refresh/ delete the  products in cache
-    await invalidateCache({ product: true });
+    await invalidateCache({ product: true, productId: String(product._id)});
 
     return res.status(200).json({
         success: true,
@@ -189,7 +189,7 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
 
 export const searchProducts = TryCatch(async (
     req: Request<{}, {}, {}, searchProductQuery>,
-    res, next) => {
+    res:Response, next:NextFunction) => {
 
     // Extract query parameters from the request
     const { search, price, category, sort } = req.query;

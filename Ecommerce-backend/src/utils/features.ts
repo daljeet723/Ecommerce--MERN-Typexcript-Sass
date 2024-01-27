@@ -13,28 +13,34 @@ export const connectDB = (uri: string) => {
 }
 
 export const invalidateCache = async ({
-    product, order, admin, userId, orderId }: invalidateCacheProp) => {
+    product, order, admin, userId, orderId, productId }: invalidateCacheProp) => {
     if (product) {
 
         //create array of all api for which caching is performed
-        const productKeys: string[] = ["latest-product", "categories", "all-products"];
+        const productKeys: string[] =
+            ["latest-product", "categories", "all-products"];
 
-        //get all id from products db
-        const products = await Product.find({}).select("_id");
+        //if there is change in single product
+        if (typeof productId === "string") {
+            productKeys.push(`product-${productId}`);
+        }
 
-        //get all id from products and push them in array for getSingleProduct API
-        products.forEach(idx => {
-            productKeys.push(`product-${idx._id}`);
-        });
+        //if productId is in array, if any new order is placed
+        if (typeof productId === "object") {
+            productId.forEach((i) => productKeys.push(`product-${i}`))
+        }
+
         myCache.del(productKeys)
     }
+
     if (order) {
-        //craete array for all keys for which caching is performed
+        //create array for all keys for which caching is performed
         const orderKeys: string[] =
             ["all-orders", `my-orders-${userId}`, `order-${orderId}`];
 
         myCache.del(orderKeys)
     }
+
     if (admin) { }
 }
 

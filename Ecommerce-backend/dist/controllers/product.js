@@ -203,7 +203,7 @@ export var updateProduct = TryCatch(function (req, res, next) { return __awaiter
             case 2:
                 _b.sent();
                 //whenevr product is updated refresh/ delete the  products in cache
-                return [4 /*yield*/, invalidateCache({ product: true })];
+                return [4 /*yield*/, invalidateCache({ product: true, productId: String(product._id) })];
             case 3:
                 //whenevr product is updated refresh/ delete the  products in cache
                 _b.sent();
@@ -231,7 +231,7 @@ export var deleteProduct = TryCatch(function (req, res, next) { return __awaiter
             case 2:
                 _a.sent();
                 //whenevr product is deleted refresh/ delete the  products in cache
-                return [4 /*yield*/, invalidateCache({ product: true })];
+                return [4 /*yield*/, invalidateCache({ product: true, productId: String(product._id) })];
             case 3:
                 //whenevr product is deleted refresh/ delete the  products in cache
                 _a.sent();

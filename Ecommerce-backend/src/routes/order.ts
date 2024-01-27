@@ -11,7 +11,7 @@ app.post("/new", newOrder);
 app.get("/my", myOrders);
 
 //ROUTE - /api/v1/order/all   --- adminOnly
-app.get("/all", allOrders);
+app.get("/all", isAdmin, allOrders);
 
 app.route("/:id")
     .get(getSingleOrder)

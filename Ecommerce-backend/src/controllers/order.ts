@@ -28,7 +28,11 @@ export const newOrder = TryCatch(async (
 
     //it will refresh cache as product & order db is updated
     await invalidateCache({
-        product: true, order: true, admin: true, userId: user
+        product: true, 
+        order: true, 
+        admin: true, 
+        userId: user,
+        productId: order.orderItems.map((i)=> String(i.productId))
     });
 
     return res.status(201).json({
@@ -120,7 +124,11 @@ export const processOrder = TryCatch(async (req, res, next) => {
     await order.save();
 
     await invalidateCache({
-        product: false, order: true, admin: true, userId: order.id, orderId: String(order._id)
+        product: false, 
+        order: true, 
+        admin: true, 
+        userId: order.id, 
+        orderId: String(order._id)
     });
 
     return res.status(200).json({
