@@ -5,11 +5,7 @@
   font-size: $size;
 }
 
-@mixin flex(
-  $dir: row,
-  $justifyContent: center,
-  $alignItems: center,
-  $gap: 1rem
+@mixin flex($dir: row, $justifyContent: center, $alignItems: center, $gap: 1rem
 ) {
   display: flex;
   flex-direction: $dir;
@@ -17,6 +13,7 @@
   align-items: $alignItems;
   gap: $gap;
 }
+
 @mixin grid($col: 1fr, $gap: 1rem, $row: unset) {
   display: grid;
   grid-template-columns: $col;

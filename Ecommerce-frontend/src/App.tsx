@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { lazy, Suspense } from "react";
 import Loader from "./components/loader";
 import Header from "./components/header";
+//import Toaster here so that it can be used anywhere in project
+//Toaster exaple - success icon, error icon, emoji, etc
+import {Toaster} from "react-hot-toast"
 
 
 //Lazy is used to prevent pages from loading when not using or rendering for fast performance
@@ -83,6 +86,7 @@ const App = () => {
           </Route>;
         </Routes>
       </Suspense>
+      <Toaster position="bottom-center"/>
     </Router>
   )
 }

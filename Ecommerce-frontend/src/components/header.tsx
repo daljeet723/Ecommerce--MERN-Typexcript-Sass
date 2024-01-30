@@ -3,7 +3,8 @@ import { FaSearch, FaShoppingBag, FaSignInAlt, FaSignOutAlt, FaUser } from "reac
 import { useState } from "react";
 
 const Header = () => {
-    const user = { _id: "fggh", role: "admin" };
+    //_id ="" indicates user is not signed in so by deafult make it logout
+    const user = { _id: "", role: "admin" };
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const logoutHandler =()=>{
