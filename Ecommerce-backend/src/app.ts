@@ -10,6 +10,7 @@ import { errorMiddleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
 import {config} from "dotenv";
 import morgan from "morgan";
+import cors from "cors"; //when using external api here using to sgn in through Google, permissio required hence using CORS
 
 
 //call congif at top to access env variables
@@ -35,6 +36,8 @@ app.use(express.json());
 //gives API call information on console(status, runtime,..)
 //The "dev" format is particularly useful during development and debugging.
 app.use(morgan("dev"));
+
+app.use(cors());
 
 app.get("/", (req, res) => {
     res.send("API is Working with /api/v1");
