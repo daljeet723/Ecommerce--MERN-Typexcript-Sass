@@ -1,10 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Loader from "./components/loader";
 import Header from "./components/header";
 //import Toaster here so that it can be used anywhere in project
 //Toaster exaple - success icon, error icon, emoji, etc
-import {Toaster} from "react-hot-toast"
+import { Toaster } from "react-hot-toast"
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
+import { useDispatch } from "react-redux";
+import { userExist, userNotExist } from "./redux/reducer/userReducer";
+import { getUser } from "./redux/api/userAPI";
 
 
 //Lazy is used to prevent pages from loading when not using or rendering for fast performance
@@ -12,9 +17,9 @@ const Home = lazy(() => import("./pages/home"));
 const Search = lazy(() => import("./pages/search"));
 const Cart = lazy(() => import("./pages/cart"));
 const Shipping = lazy(() => import("./pages/shipping"));
-const Login = lazy(()=> import ("./pages/login"));
-const Orders = lazy(()=> import ("./pages/orders"));
-const OrderDetails = lazy(()=> import ("./pages/order-details"));
+const Login = lazy(() => import("./pages/login"));
+const Orders = lazy(() => import("./pages/orders"));
+const OrderDetails = lazy(() => import("./pages/order-details"));
 
 //ADMIN 
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
@@ -36,6 +41,19 @@ const TransactionManagement = lazy(
 );
 
 const App = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    // This user is firebase user where authentication is done
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        console.log("logged in");
+        //if user exists, its uid can be fetched
+        const data = await getUser(user.uid)
+        dispatch(userExist(data.user));
+      } else dispatch(userNotExist())
+    })
+  }, []);
+
   return (
     <Router>
       {/* HEADER */}
@@ -48,7 +66,7 @@ const App = () => {
           <Route path="/cart" element={<Cart />} />
 
           {/* Not logged in Route */}
-          <Route path="/login" element ={<Login/>}/>
+          <Route path="/login" element={<Login />} />
 
           {/* Logged in user routes */}
           <Route>
@@ -86,7 +104,7 @@ const App = () => {
           </Route>;
         </Routes>
       </Suspense>
-      <Toaster position="bottom-center"/>
+      <Toaster position="bottom-center" />
     </Router>
   )
 }

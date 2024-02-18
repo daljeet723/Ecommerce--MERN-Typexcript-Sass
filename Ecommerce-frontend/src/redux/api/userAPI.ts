@@ -2,8 +2,9 @@
 
 // Importing necessary functions from the RTK Query library
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { MessageResponse } from '../../types/api-types';
+import { MessageResponse, UserResponse } from '../../types/api-types';
 import { User } from '../../types/types';
+import axios from 'axios';
 
 
 // createApi: This function takes an object including reducerPath, baseQuery, and endpoints
@@ -32,10 +33,23 @@ export const userApi = createApi({
                 // which presumably contains the user's credentials or other relevant information needed for authentication or login.
                 body: user,
             })
-        })
+        }),
+
     })
 });
 
+
+export const getUser = async (id: string) => {
+    try {
+        //de-structure data which will define type of data
+        const { data }: { data: UserResponse } = await axios.get(
+            `${import.meta.env.VITE_SERVER}/api/v1/user/${id}`)
+        return data
+
+    } catch (error) {
+        throw error
+    }
+}
 //@reduxjs/toolkit/query/react will itself create useLoginMutuation
 //As we defined "login" endpoint at line 23
 //Use useApi in store.ts
