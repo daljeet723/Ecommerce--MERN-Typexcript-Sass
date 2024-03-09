@@ -38,10 +38,12 @@ export const userApi = createApi({
     })
 });
 
-
+//import in app.ts
 export const getUser = async (id: string) => {
     try {
         //de-structure data which will define type of data
+        //return {data}
+        //define types of data. TYpeis userResponse{data: userReponse}
         const { data }: { data: UserResponse } = await axios.get(
             `${import.meta.env.VITE_SERVER}/api/v1/user/${id}`)
         return data

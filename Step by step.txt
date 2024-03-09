@@ -1,6 +1,6 @@
 
 FRONTEND:
-(1) On terminal write command "vite@latest"
+(1) On terminal write command "npm create vite@latest"
     - Give project name ..here : Ecommerce-frontend 
     - Select React
     - Select Typescript + SWC

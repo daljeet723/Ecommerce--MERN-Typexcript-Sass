@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
 import { FaSearch, FaShoppingBag, FaSignInAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { useState } from "react";
+import {User} from "../types/types"
 
-const Header = () => {
-    //_id ="" indicates user is not signed in so by deafult make it logout
-    const user = { _id: "", role: "admin" };
+interface PropsType{
+    user: User | null
+}
+const Header = ({user}: PropsType) => {
+
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const logoutHandler =()=>{

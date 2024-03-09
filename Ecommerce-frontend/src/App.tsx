@@ -1,16 +1,17 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
 import Loader from "./components/loader";
 import Header from "./components/header";
 //import Toaster here so that it can be used anywhere in project
 //Toaster exaple - success icon, error icon, emoji, etc
-import { Toaster } from "react-hot-toast"
+import { Toaster } from "react-hot-toast";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userExist, userNotExist } from "./redux/reducer/userReducer";
 import { getUser } from "./redux/api/userAPI";
-
+import { UserReducerInitialState } from "./types/reducer-types";
+import ProtectedRoute from "./components/protected-route";
 
 //Lazy is used to prevent pages from loading when not using or rendering for fast performance
 const Home = lazy(() => import("./pages/home"));
@@ -21,7 +22,7 @@ const Login = lazy(() => import("./pages/login"));
 const Orders = lazy(() => import("./pages/orders"));
 const OrderDetails = lazy(() => import("./pages/order-details"));
 
-//ADMIN 
+//ADMIN
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
 const Products = lazy(() => import("./pages/admin/products"));
 const Customers = lazy(() => import("./pages/admin/customers"));
@@ -41,6 +42,10 @@ const TransactionManagement = lazy(
 );
 
 const App = () => {
+  const { user, loading } = useSelector(
+    (state: { userReducer: UserReducerInitialState }) => state.userReducer
+  );
+
   const dispatch = useDispatch();
   useEffect(() => {
     // This user is firebase user where authentication is done
@@ -48,39 +53,44 @@ const App = () => {
       if (user) {
         console.log("logged in");
         //if user exists, its uid can be fetched
-        const data = await getUser(user.uid)
+        const data = await getUser(user.uid);
         dispatch(userExist(data.user));
-      } else dispatch(userNotExist())
-    })
-  }, []);
-
-  return (
+      } else dispatch(userNotExist());
+    });
+  }, [dispatch]);
+  
+  return loading ? (
+    <Loader />
+  ) : (
     <Router>
       {/* HEADER */}
-      <Header />
+      <Header user={user} />
       {/* fallback used to display other value when page/data is loading */}
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/cart" element={<Cart />} />
-
           {/* Not logged in Route */}
-          <Route path="/login" element={<Login />} />
-
+          <Route
+            path="/login"
+            element={
+              // <ProtectedRoute isAuthenticated={user ? false : true} redirect="/login">
+                <Login />
+              // </ProtectedRoute>
+            }
+          />
           {/* Logged in user routes */}
           <Route>
             <Route path="/shipping" element={<Shipping />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/orders/:id" element={<OrderDetails />} />
           </Route>
-
-
           {/* ADMIN ROUTES */}
           <Route
-          // element={
-          //   <ProtectedRoute isAuthenticated={true} adminRoute={true} isAdmin={true} />
-          // }
+          element={
+            <ProtectedRoute isAuthenticated={true} adminRoute={true} isAdmin={true} />
+          }
           >
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/product" element={<Products />} />
@@ -100,13 +110,17 @@ const App = () => {
 
             <Route path="/admin/product/:id" element={<ProductManagement />} />
 
-            <Route path="/admin/transaction/:id" element={<TransactionManagement />} />
-          </Route>;
+            <Route
+              path="/admin/transaction/:id"
+              element={<TransactionManagement />}
+            />
+          </Route>
+          ;
         </Routes>
       </Suspense>
       <Toaster position="bottom-center" />
     </Router>
-  )
-}
+  );
+};
 
-export default App
+export default App;

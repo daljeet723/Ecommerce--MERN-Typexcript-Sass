@@ -7,10 +7,12 @@ const initialState: UserReducerInitialState = {
     loading: true
 }
 
+//udse in app.ts where checking user logged in or not
 export const userReducer = createSlice({
     name: "userReducer",
     initialState,
     reducers: {
+        //return details of user stored in payload action
         userExist: (state, action: PayloadAction<User>) => {
             state.loading = false,
                 state.user = action.payload

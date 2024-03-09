@@ -5,6 +5,7 @@ export type MessageResponse = {
     message: string
 }
 
+// getUserById API at backend.
 export type UserResponse ={
     success:boolean,
     user: User
